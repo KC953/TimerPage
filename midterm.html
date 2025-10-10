@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Midterm Multiple Choice Questions - 60 Minute Limit</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background-color: #f0f0ff; /* Light blue background for the page */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Use Flexbox for two-column layout */
+        }
+        
+        /* --- Fixed Sidebar (Left Column) --- */
+        #sidebar {
+            width: 200px; /* Fixed width for the timer column */
+            height: 100vh; /* Full viewport height */
+            position: fixed; /* Makes the sidebar stay put on scroll */
+            top: 0;
+            left: 0;
+            background-color: #f0f0ff; /* Matches body background */
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+        #timer-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #000; /* Black letters for the label */
+            margin-bottom: 5px;
+        }
+        #timer { 
+            font-size: 2.5em; /* Slightly smaller font for the sidebar */
+            font-weight: bold; 
+            color: #d93025; /* RED text color for the countdown time */
+            padding: 10px;
+            border: 3px solid #d93025; /* RED border color */
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: white; /* Make the timer box stand out */
+        }
+        
+        /* --- Form Container (Right Column) --- */
+        #form-wrapper {
+            margin-left: 200px; /* Offset the wrapper by the width of the fixed sidebar */
+            flex-grow: 1; /* Allows the form container to fill the remaining space */
+            padding-left: 30px; /* Small space between sidebar and form */
+            padding-top: 20px;
+        }
+        #warning-note {
+            color: #6a1b9a; 
+            font-weight: bold; 
+            margin-bottom: 20px;
+        }
+        #form-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #exam-form {
+            width: 100%;
+            height: 6424px; /* Maintain height for the long form */
+            border: none;
+        }
+        /* Style for the lock screen when time is up */
+        .lock-screen {
+            padding: 50px;
+            background-color: #ffdddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h1 style="font-size: 1.5em; color: black; margin-bottom: 10px;">Midterm Multiple Choice Questions</h1>
+        <div id="timer-label">🕒 Time Remaining</div>
+        <div id="timer">60:00</div>
+        <div id="warning-note" style="text-align: left;">
+            ⚠️ **LOCKED AT 00:00!** The form will be disabled immediately when time expires.
+        </div>
+    </div>
+
+    <div id="form-wrapper">
+        <div id="form-container">
+            <iframe id="exam-form" 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdewjyNCw40_BjNIyckv4RMIgf5oKiXHdpKKERkMPa6yAD8HA/viewform?embedded=true" 
+                width="640" 
+                height="6424" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">載入中…</iframe>
+        </div>
+    </div>
+
+    <script>
+        // Total time in seconds (60 minutes * 60 seconds)
+        const totalTime = 60 * 60; 
+        let timeLeft = totalTime;
+        const timerDisplay = document.getElementById('timer');
+        const formContainer = document.getElementById('form-container');
+        const sidebar = document.getElementById('sidebar');
+
+        const timer = setInterval(function() {
+            timeLeft--;
+
+            // Calculate minutes and seconds
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+
+            // Display the time, padding with zero
+            timerDisplay.textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Logic for when the timer runs out
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                timerDisplay.textContent = "TIME'S UP!";
+                timerDisplay.style.color = "white";
+                timerDisplay.style.backgroundColor = "#d93025";
+                timerDisplay.style.borderColor = "black";
+                
+                // ACTION: Hide the form and replace it with the lock screen
+                formContainer.classList.add('lock-screen');
+                formContainer.innerHTML = '<h2>🛑 Exam Locked! Time Has Expired.</h2><p>As pre-warned, the submission is now disabled. Any attempt to submit after this point may be disqualified. Thank you.</p>';
+                
+                // Update sidebar lock message
+                sidebar.innerHTML = '<h2 style="color: #d93025; padding-top: 50px;">EXAM LOCKED!</h2><p>Time expired at 00:00.</p>';
+
+                return;
+            }
+        }, 1000); // Update every 1 second
+    </script>
+
+</body>
+</html>
